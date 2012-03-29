@@ -2,13 +2,11 @@
 
 set -eu # -x for verbose logging to juju debug-log
 
-juju-log "Installing ruby, apache, passenger"
-apt-get -y install -qq ruby ruby-dev
-apt-get -y install -qq ruby1.9.1 ruby1.9.1-dev
-apt-get -y install -qq rake libapache2-mod-passenger
-apt-get -y install -qq libsqlite3-dev libsqlite3-ruby
-apt-get -y install -qq libmysqlclient16 libmysqlclient16-dev 
-apt-get -y install -qq libpgsql-ruby 
+juju-log "Installing Ruby..."
+apt-get -y install -qq ruby1.9.1-dev
+juju-log "Installing prerequired packages"
+apt-get -y install -qq libapache2-mod-passenger libsqlite3-dev libsqlite3-ruby\
+  libmysqlclient16 libmysqlclient16-dev libpgsql-ruby
 
 install_root=`config-get install_root`
 app_name=`config-get app_name`
