@@ -40,16 +40,13 @@ install_app() {
 }
 [ -d $app_dir ] || install_app
 
-install_rvm() {
-  juju-log "installing rvm"
-  apt-get -y install -qq ruby-rvm
-}
-install_rvm
-
 install_bundle() {
   REALLY_GEM_UPDATE_SYSTEM=true gem update --system
   gem install 'bundler' --no-ri --no-rdoc
-  cd $app_dir && bundle install
+  cd $app_dir
+  bundle install --without development:test --path vendor/bundle --binstubs bin/ --deployment
+  PATH="$app_dir/bin:$PATH"
+  echo "PATH='$app_dir/bin:$PATH'" >> ~/.bash_profile
 }
 install_bundle
 
@@ -71,4 +68,3 @@ configure_passenger() {
 EOS
 }
 [ -f $vhost_file ] || configure_passenger
-
