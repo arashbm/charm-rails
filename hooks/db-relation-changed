@@ -21,7 +21,7 @@ bundle_add_db() {
 bundle_has_db || bundle_add_db
 
 update_bundle() {
-  cd $app_dir && bundle install
+  cd $app_dir && bundle install --without development:test --path vendor/bundle --binstubs bin/ --deployment
 }
 update_bundle
 
@@ -44,18 +44,18 @@ EOS
 write_database_config
 
 database_version() {
-  `cd $app_dir && rake RAILS_ENV=production db:version | awk '/Current version:/ { print $3 }'`
+  `cd $app_dir && bundle exec rake RAILS_ENV=production db:version | awk '/Current version:/ { print $3 }'`
 }
 migrate_database() {
   cd $app_dir
-  db_version=`rake RAILS_ENV=production db:version | awk '/Current version:/ { print $3 }'`
+  db_version=`bundle exec rake RAILS_ENV=production db:version | awk '/Current version:/ { print $3 }'`
   juju-log "Current database version: ${db_version}"
   if [ ${db_version} -eq 0 ]; then
     juju-log "Migrating database"
-    rake RAILS_ENV=production db:migrate
+    bundle exec rake RAILS_ENV=production db:migrate
 
     juju-log "Seeding database"
-    rake RAILS_ENV=production db:seed
+    bundle exec rake RAILS_ENV=production db:seed
   fi
 }
 (( $(database_version) )) || migrate_database
