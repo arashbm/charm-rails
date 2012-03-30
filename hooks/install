@@ -66,3 +66,6 @@ configure_passenger() {
 EOS
 }
 [ -f $vhost_file ] || configure_passenger
+
+juju-log "Stoping Apache2..."
+service apache2 stop
